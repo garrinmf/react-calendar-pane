@@ -24,6 +24,7 @@ class Calendar extends Component {
     this.previous = this.previous.bind(this);
     this.next = this.next.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.viewChanged = this.viewChanged.bind(this);
   }
 
   componentWillMount() {
@@ -63,13 +64,35 @@ class Calendar extends Component {
   previous() {
     this.setState({
       month: moment(this.state.month).subtract(1, 'month'),
-    });
+    }, this.viewChanged);
   }
 
   next() {
     this.setState({
       month: moment(this.state.month).add(1, 'month'),
-    });
+    }, this.viewChanged);
+  }
+
+  viewChanged() {
+    let { onViewChanged, startOfWeekIndex } = this.props;
+
+    if (!onViewChanged) {
+      return;
+    }
+
+    let { month } = this.state;
+
+    const start = month
+      .clone()
+      .startOf('month')
+      .day(startOfWeekIndex);
+
+    const end = month
+      .clone()
+      .endOf('month')
+      .day(7 + startOfWeekIndex);
+
+    onViewChanged(month, start, end);
   }
 
   render() {
@@ -207,6 +230,7 @@ Calendar.propTypes = {
   startOfWeekIndex: PropTypes.number,
   dayRenderer: PropTypes.func,
   dayOfWeekFormat: PropTypes.string,
+  onViewChanged: PropTypes.func,
 };
 
 export default Calendar;
