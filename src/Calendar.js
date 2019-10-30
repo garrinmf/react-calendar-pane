@@ -35,6 +35,8 @@ class Calendar extends Component {
     }
 
     this.state.month.locale(this.props.locale);
+
+    this.viewChanged();
   }
 
   componentWillUpdate(nextProps, nextState) {

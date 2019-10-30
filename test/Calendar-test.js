@@ -38,8 +38,31 @@ describe('Calendar', () => {
       .assertMonth('March');
   });
 
-  it('should be tell you when you move months', done => {
+  it('should be tell you initial view range', done => {
+    let call = 0;
     const callback = (month, start, end) => {
+      expect(month.format("MMMM")).to.equal("April");
+      expect(start.format("DD/MM/YYYY")).to.equal("29/03/2015");
+      expect(end.format("DD/MM/YYYY")).to.equal("03/05/2015");
+      done();
+    };
+
+    const calendar = (
+      <Calendar date={moment('03/04/2015', 'DD/MM/YYYY')} onSelect={onSelect} onViewChanged={callback} />
+    );
+
+    asserter(calendar);
+  });
+
+  it('should be tell you when you move months', done => {
+    let call = 0;
+    const callback = (month, start, end) => {
+      // first call is the "initialize"
+      if ( call === 0 ) {
+        call = call + 1;
+        return;
+      }
+
       expect(month.format("MMMM")).to.equal("March");
       expect(start.format("DD/MM/YYYY")).to.equal("01/03/2015");
       expect(end.format("DD/MM/YYYY")).to.equal("05/04/2015");
